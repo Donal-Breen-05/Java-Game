@@ -14,8 +14,8 @@ import main.GamePanel;
 
 public class TileManager {
     GamePanel gp ;
-    Tile[] tile;
-    int mapTileArray[][];
+    public Tile[] tile;
+    public int mapTileArray[][];
 
     //constructor??
     public TileManager(GamePanel gp) {
@@ -38,6 +38,7 @@ public class TileManager {
 
             tile[2] = new Tile();
             tile[2].image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/tiles/032.png")));
+            tile[2].collision = true; // makes a tile have collision
 
             tile[3] = new Tile();
             tile[3].image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/tiles/011.png")));

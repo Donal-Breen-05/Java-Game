@@ -1,6 +1,6 @@
 package entity;
 
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Objects;
@@ -25,6 +25,13 @@ public class Player extends Entity{
 		screenx = gp.screenWidth/2 - (gp.tileSize - 2);
 		screeny = gp.screenHeight/2 - (gp.tileSize - 2);
 
+		//collision
+		solidArea = new Rectangle();
+		solidArea.x = 8 ;
+		solidArea.y = 16;
+		solidArea.width = 32;
+		solidArea.height = 32;
+
 		setDefaultValues(); 
 		getPlayerImage(); 
 		
@@ -45,22 +52,48 @@ public class Player extends Entity{
 		
 		//only up date if keys have been pressed 
 		if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {
+
 			if (keyH.upPressed) {
+
 				direction = "up"; 
-				worldy -= speed; //moves character up
+				//worldy -= speed; //moves character up
 
 			} else if (keyH.downPressed) {
+
 				direction = "down";
-				worldy += speed; //down
+				//worldy += speed; //down
+
 			} else if (keyH.leftPressed) {
+
 				direction = "left";
-				worldx -= speed;//left
+				//worldx -= speed;//left
+
 			}else if (keyH.rightPressed) {
 				direction = "right"; 
-				worldx += speed; //right
+				//worldx += speed; //right
 			}
 			
-			
+			//collision detection
+			collisionOn = false;
+			gp.cChecker.checkTile(this);
+
+			//only let player move if collision is false
+			if (collisionOn == false) {
+				switch(direction) {
+					case "up":
+						worldy -= speed; //moves character up
+						break;
+					case "down":
+						worldy += speed; //down
+						break;
+					case "left":
+						worldx -= speed;//left
+						break;
+					case "right":
+						worldx += speed; //right
+						break;
+				}
+			}
 			
 			//change sprite image every 10 frames 
 			spriteCounter++ ; 
