@@ -10,7 +10,8 @@ import java.awt.Graphics2D;
 import javax.swing.JPanel;
 
 import entity.Player;
-import tile.TileManager; 
+import item.Item;
+import tile.TileManager;
 
 
 //constructor? 
@@ -48,6 +49,11 @@ public class GamePanel extends JPanel implements Runnable{
 	//collision detection
 	public CollisionDetection cChecker = new CollisionDetection(this);
 
+	//set items
+	public ItemSet itemSetter = new ItemSet(this);
+
+	//items
+	public Item[] item_array = new Item[10];
 	
 	public GamePanel() { 
 		this.setPreferredSize(new Dimension(screenWidth , screenHeight)); 
@@ -56,6 +62,11 @@ public class GamePanel extends JPanel implements Runnable{
 		this.addKeyListener(keyH);//needed for keyboard input also saves lots of debugging 
 		this.setFocusable(true);
 		
+	}
+
+	//set up items and entity
+	public void setupGame() {
+		itemSetter.setItem();
 	}
 	
 	//start main thread (main game loop) 
@@ -133,7 +144,18 @@ public class GamePanel extends JPanel implements Runnable{
 		
 		//always before everything else because it needs to be in layers 
 		tileM.draw(g2);
-		
+
+		//items
+        for (Item item : item_array) {
+
+            if (item != null) {
+
+                item.draw(g2, this);
+
+            }//end if
+
+        }//end for
+
 		//calls player object and calls function from player class 		
 		player.draw(g2);
 		

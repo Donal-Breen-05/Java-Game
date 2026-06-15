@@ -20,7 +20,9 @@ public class Main {
 		//screen location isnt bound 
 		window.setLocationRelativeTo(null); 
 		window.setVisible(true); 
-		
+
+		//sets items
+		gamePanel.setupGame();
 		gamePanel.startGameThread();
 		
 	}
