@@ -15,5 +15,6 @@ public class Item_coin extends Item{
         }catch(IOException e) {
             e.printStackTrace();
         }
+        collision = true;
     }
 }

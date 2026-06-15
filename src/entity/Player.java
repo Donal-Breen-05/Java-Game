@@ -32,6 +32,9 @@ public class Player extends Entity{
 		solidArea.width = 32;
 		solidArea.height = 32;
 
+		solidAreaDefaultY = solidArea.x;
+		solidAreaDefaultX = solidArea.y;
+
 		setDefaultValues(); 
 		getPlayerImage(); 
 		
@@ -76,6 +79,10 @@ public class Player extends Entity{
 			//collision detection
 			collisionOn = false;
 			gp.cChecker.checkTile(this);
+
+			//item collision
+			int item_index  = gp.cChecker.checkItem(this , true);
+			collectItem(item_index);
 
 			//only let player move if collision is false
 			if (collisionOn == false) {
@@ -124,6 +131,41 @@ public class Player extends Entity{
 		}catch(IOException e) { 
 			e.printStackTrace();
 		}
+	}
+
+	public void collectItem(int index) {
+
+		if (index != 999) {
+			String itemName = gp.item_array[index].name;
+
+			switch(itemName) {
+				case "coin":
+					gp.item_array[index] = null;
+					score++;
+					break;
+				case "heart":
+					if (health < 6){
+						// to be added in the future
+						gp.item_array[index] = null;
+						health++;
+						if (health > 6) {
+							health = 6;
+						}
+					}//end if
+					break;
+				case "sword":
+					// to be added in the future
+					gp.item_array[index] = null;
+					damage++;
+					break;
+				case "sheild":
+					gp.item_array[index] = null;
+					armour++;
+			}
+
+			gp.item_array[index] = null;
+		}
+
 	}
 	
 	public void draw(Graphics2D g2) { 
