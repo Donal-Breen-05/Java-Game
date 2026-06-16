@@ -51,6 +51,7 @@ public class GamePanel extends JPanel implements Runnable{
 	public int gameState;
 	public final int playState = 1;
 	public final int pauseState = 2;
+	public final int titleScreenState = 0;
 
 	//entity / player
 	public Player player = new Player(this,keyH);
@@ -78,7 +79,7 @@ public class GamePanel extends JPanel implements Runnable{
 	//set up items and entity
 	public void setupGame() {
 		itemSetter.setItem();
-		gameState = playState; // game plays as normal
+		gameState = titleScreenState; //initially sets as the title screen
 	}
 	
 	//start main thread (main game loop) 
@@ -159,29 +160,36 @@ public class GamePanel extends JPanel implements Runnable{
 		super.paintComponent(g);
 		
 		Graphics2D g2 = (Graphics2D)g; //extends the graphics class (inherits it)
+
+		if (gameState == titleScreenState) {
+			ui.draw(g2);
+		}
+		else {
+			//always before everything else because it needs to be in layers
+			tileM.draw(g2);
+
+			//items
+			for (Item item : item_array) {
+
+				if (item != null) {
+
+					item.draw(g2, this);
+
+				}//end if
+
+			}//end for
+
+			//calls player object and calls function from player class
+			player.draw(g2);
+
+
+			//ui on top layer
+			ui.draw(g2);
+			g2.dispose();
+
+		}// end else
 		
-		
-		//always before everything else because it needs to be in layers 
-		tileM.draw(g2);
 
-		//items
-        for (Item item : item_array) {
-
-            if (item != null) {
-
-                item.draw(g2, this);
-
-            }//end if
-
-        }//end for
-
-		//calls player object and calls function from player class 		
-		player.draw(g2);
-
-
-		//ui on top layer
-		ui.draw(g2);
-		g2.dispose();
 		
 	}
 }

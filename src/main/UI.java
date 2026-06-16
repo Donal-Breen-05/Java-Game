@@ -38,6 +38,11 @@ public class UI {
     public void draw(Graphics2D g2) {
         this.g2 = g2;
 
+        //title state
+        if (gp.gameState == gp.titleScreenState) {
+            drawTitle();
+        }
+        //if play state
         if (gp.gameState == gp.playState) {
 
 
@@ -68,17 +73,14 @@ public class UI {
                 g2.setFont(comic_sansLarge);
                 g2.setColor(Color.red);
 
-                int x ;
-                int y ;
 
                 //get textLength
                 String text = "Game Over";
-                int textLength = (int)g2.getFontMetrics().getStringBounds(text , g2).getWidth();
+                int x = centerText(text);
+                int y = gp.screenHeight / 2 ;
 
-                x  = gp.screenWidth/2 - textLength/2;
-                y = gp.screenHeight/2 - (gp.tileSize*3);
+                g2.drawString(text , x  ,y);
 
-                g2.drawString(text , x ,y );
                 //g2.drawString(Player.score , x ,y );
 
                 //end the game
@@ -91,9 +93,13 @@ public class UI {
 
         }
 
-
-
     }// end draw
+
+    public void drawTitle() {
+
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 96F));
+        String text = "Zombie Survival";
+    } //end draw title
 
     public void drawPauseScreen() {
 
@@ -101,11 +107,8 @@ public class UI {
         g2.setColor(Color.white);
 
         String text = "paused";
-        int x , y ;
-        int textLength = (int)g2.getFontMetrics().getStringBounds(text , g2).getWidth();
-
-        x = gp.screenWidth / 2  - textLength /2 ;
-        y = gp.screenHeight / 2 ;
+        int x = centerText(text);
+        int y = gp.screenHeight / 2 ;
 
         g2.drawString(text , x  ,y);
     }
@@ -114,4 +117,12 @@ public class UI {
         message = text;
         messageOn = true;
     }
+
+
+    //helper method to center text
+    public int centerText(String text) {
+        int length = (int)g2.getFontMetrics().getStringBounds(text, g2).getWidth();
+        return gp.screenWidth/2 - length/2 ; 
+    }
+
 }
