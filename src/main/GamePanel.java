@@ -40,10 +40,13 @@ public class GamePanel extends JPanel implements Runnable{
 	//fps 
 	int fps = 60; 
 
-	
+	//engine
 	TileManager tileM = new TileManager(this); 
 	KeyHandler keyH = new KeyHandler();
-	Thread GameThread; 	//thread for drawing screen 
+	Thread gameThread; 	//thread for drawing screen
+	public UI ui = new UI(this);
+
+	//entity / player
 	public Player player = new Player(this,keyH);
 
 	//collision detection
@@ -73,8 +76,8 @@ public class GamePanel extends JPanel implements Runnable{
 	public void startGameThread() {
 		
 		//Instantiate the game thread 
-		GameThread = new Thread(this); //calls the thread object referencing current class to make GameThread 
-		GameThread.start(); //starts main loop? 
+		gameThread = new Thread(this); //calls the thread object referencing current class to makegameThread
+		gameThread.start(); //starts main loop?
 		
 	}
 	
@@ -87,7 +90,7 @@ public class GamePanel extends JPanel implements Runnable{
 		double drawInterval = (double) 1000000000 /fps; //0.1666 second in nano seconds (very precise)
 		double nextDrawTime = System.nanoTime() + drawInterval; //adds the interval to the internal time to slow it 
 		//all inside while will continue as long as game thread exists 
-		while (GameThread != null) {
+		while (gameThread != null) {
 			
 			//update char position 
 			update(); 
@@ -158,7 +161,10 @@ public class GamePanel extends JPanel implements Runnable{
 
 		//calls player object and calls function from player class 		
 		player.draw(g2);
-		
+
+
+		//ui on top layer
+		ui.draw(g2);
 		g2.dispose();
 		
 	}

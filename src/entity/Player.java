@@ -141,26 +141,33 @@ public class Player extends Entity{
 			switch(itemName) {
 				case "coin":
 					gp.item_array[index] = null;
-					score++;
+					gp.ui.showMessage("Score + 1!");
+					//score++;
 					break;
 				case "heart":
+/*
 					if (health < 6){
 						// to be added in the future
 						gp.item_array[index] = null;
+						gp.ui.showMessage("Health increased!");
 						health++;
 						if (health > 6) {
 							health = 6;
 						}
 					}//end if
+
+ */
 					break;
 				case "sword":
 					// to be added in the future
 					gp.item_array[index] = null;
-					damage++;
+					gp.ui.showMessage("A Stronger Sword!, you should do more damage now!");
+					//damage++;
 					break;
 				case "sheild":
+					gp.ui.showMessage("Armour + 1!");
 					gp.item_array[index] = null;
-					armour++;
+					//armour++;
 			}
 
 			gp.item_array[index] = null;
