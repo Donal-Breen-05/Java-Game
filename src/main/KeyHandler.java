@@ -28,39 +28,66 @@ public class KeyHandler implements KeyListener {
 
 	@Override
 	public void keyPressed(KeyEvent e) {
+		//gets current key
+		int code = e.getKeyCode();
 
-		//gets current key 
-		int code = e.getKeyCode(); 
-		
-		//has w been pressed? 
-		if (code == KeyEvent.VK_W) { 
-			upPressed = true; 
-		}
-		if (code == KeyEvent.VK_S) { 
-			downPressed = true; 
-		}
-		if (code == KeyEvent.VK_A) { 
-			leftPressed = true; 
-		}
-		if (code == KeyEvent.VK_D) { 
-			rightPressed = true; 
-		}
-		if (code == KeyEvent.VK_ESCAPE) {
+		//title state
+		if (gp.gameState == gp.titleScreenState) {
+			//has w been pressed?
+			if (code == KeyEvent.VK_W) {
+				gp.ui.commandNum--; //move cursor up in menu
+				if (gp.ui.commandNum < 0 ) {
+					gp.ui.commandNum = 1 ;
+				}
+			}
+			if (code == KeyEvent.VK_S) {
+				gp.ui.commandNum++;// move cursor down in menu
+				if (gp.ui.commandNum > 1 ) {
+					gp.ui.commandNum = 0 ;
+				}
+			}
+			if (code == KeyEvent.VK_ENTER) {
 
-			//if pause is pressed
-			if (gp.gameState == gp.playState) {
+				if (gp.ui.commandNum == 0 ) {
+					gp.gameState = gp.playState; // start game
+					System.out.println("startGame");
+				}
+				if (gp.ui.commandNum == 1 ) {
+					System.out.println("exitGame");
+					 System.exit(0); // quit game
+				}
+			}
+		}
+		//if play state
+		if (gp.gameState == gp.playState) {
 
+			//has w been pressed?
+			if (code == KeyEvent.VK_W) {
+				upPressed = true;
+			}
+			if (code == KeyEvent.VK_S) {
+				downPressed = true;
+			}
+			if (code == KeyEvent.VK_A) {
+				leftPressed = true;
+			}
+			if (code == KeyEvent.VK_D) {
+				rightPressed = true;
+			}
+			if (code == KeyEvent.VK_ESCAPE) {
 				//set state to pauses
 				gp.gameState = gp.pauseState;
 
-			}
-			else if (gp.gameState == gp.pauseState){
-				gp.gameState = gp.playState;
-			}//end else if
+			}//end ESC
+		}//end play state
+		if (gp.gameState == gp.pauseState) {
 
-		}
-		
-	}// end key pressed
+			if (code == KeyEvent.VK_ESCAPE) {
+				gp.gameState = gp.playState;
+			}// end pause state
+
+		}// end if
+	}//end KeyPressed
 
 	@Override
 	public void keyReleased(KeyEvent e) {

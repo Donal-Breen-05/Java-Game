@@ -9,7 +9,7 @@ public class Main {
 		JFrame window = new JFrame(); 
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
 		window.setResizable(false);
-		window.setTitle("myFirstGame"); 
+		window.setTitle("Zombie Survival");
 		
 		//calls a regular window but with options from "GamePanel" 
 		GamePanel gamePanel = new GamePanel(); 

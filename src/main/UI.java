@@ -18,6 +18,7 @@ public class UI {
     public String message = "";
     int messageTime = 0 ;
 
+    public int commandNum = 0;
     //end condition
     public boolean gameFinished = false;
 
@@ -97,8 +98,56 @@ public class UI {
 
     public void drawTitle() {
 
+        // background
+        g2.setColor(Color.BLACK);
+        g2.fillRect(0 , 0, gp.screenWidth, gp.screenHeight);
+
+        //title + font
         g2.setFont(g2.getFont().deriveFont(Font.BOLD, 96F));
         String text = "Zombie Survival";
+        int x = centerText(text);
+        int y = gp.tileSize*3;
+
+        //shadow
+        g2.setColor(Color.GRAY);
+        g2.drawString(text, x+5, y+5);
+        //text colour
+        g2.setColor(Color.white);
+        g2.drawString(text , x , y);
+
+
+        //images for title screen
+        x = gp.screenWidth/2 ;
+        y += gp.tileSize*2; // two tiles down
+
+        //player image (right)
+        g2.drawImage(gp.player.PlayerRight1, x+gp.tileSize, y , gp.tileSize*2, gp.tileSize*2 , null);
+        //sword image (middle)
+        g2.drawImage(gp.item_array[1].image, x -gp.tileSize, y , gp.tileSize*2, gp.tileSize*2 , null);
+        //Zombie image (left) // todo make Zombie sprite
+        g2.drawImage(gp.player.PlayerRight2, x -gp.tileSize*3, y , gp.tileSize*2, gp.tileSize*2 , null);
+
+        //menu
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD,48F));
+
+        text = "START GAME!";
+        x= centerText(text);
+        y += gp.tileSize *4;
+        g2.drawString(text,x ,y);
+
+        if (commandNum == 0) {
+            g2.drawString(">", x -gp.tileSize, y);
+        }
+
+        text = "EXIT GAME!";
+        x= centerText(text);
+        y += gp.tileSize;
+        y += gp.tileSize;
+        g2.drawString(text,x ,y);
+        if (commandNum == 1) {
+            g2.drawString(">", x -gp.tileSize, y);
+        }
+
     } //end draw title
 
     public void drawPauseScreen() {
@@ -122,7 +171,7 @@ public class UI {
     //helper method to center text
     public int centerText(String text) {
         int length = (int)g2.getFontMetrics().getStringBounds(text, g2).getWidth();
-        return gp.screenWidth/2 - length/2 ; 
+        return gp.screenWidth/2 - length/2 ;
     }
 
 }

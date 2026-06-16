@@ -11,7 +11,14 @@ public class Entity {
 	
 	
 	//player sprites  
-	BufferedImage PlayerUp1 , PlayerUp2 , PlayerDown1 , PlayerDown2 , PlayerLeft1 , PlayerLeft2 , PlayerRight1 , PlayerRight2; 
+	BufferedImage PlayerUp1;
+    BufferedImage PlayerUp2;
+    BufferedImage PlayerDown1;
+    BufferedImage PlayerDown2;
+    BufferedImage PlayerLeft1;
+    BufferedImage PlayerLeft2;
+    public BufferedImage PlayerRight1;
+    public BufferedImage PlayerRight2;
 	public String direction ; 
 	
 	//used to cycle animations 
