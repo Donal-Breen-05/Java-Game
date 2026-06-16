@@ -1,5 +1,7 @@
 package main;
 
+import item.Item;
+import item.Item_heart;
 import item.Item_sheild;
 
 import java.awt.*;
@@ -13,7 +15,9 @@ public class UI {
     Font comic_sans;
     Font comic_sansLarge;
 
-    BufferedImage sheildImage;
+    BufferedImage shieldImage;
+    BufferedImage health_full , health_half, health_empty;
+
     public boolean messageOn = false;
     public String message = "";
     int messageTime = 0 ;
@@ -31,8 +35,16 @@ public class UI {
         comic_sans = new Font("Comic Sans MS" , Font.BOLD, 60);
         comic_sansLarge = new Font("Comic Sans MS" , Font.BOLD, 120);
 
+        //hud objects
+        //armour
         Item_sheild ui_sheild = new Item_sheild();
-        sheildImage = ui_sheild.image;
+        shieldImage = ui_sheild.image;
+
+        //hearts
+        Item heart = new Item_heart(gp);
+        health_full = heart.image;
+        health_half = heart.image2;
+        health_empty =heart.image3;
 
     }
 
@@ -43,60 +55,26 @@ public class UI {
         if (gp.gameState == gp.titleScreenState) {
             drawTitle();
         }
+        if (gp.gameState == gp.controlScreenState) {
+            showControls();
+        }
         //if play state
         if (gp.gameState == gp.playState) {
 
-
             //normal play ui
-            g2.setFont(comic_sans);
-            g2.setColor(Color.white);
-            g2.drawString("test" , 50, 50);
-            g2.drawImage(sheildImage , (gp.tileSize/2) * 8 ,gp.tileSize/2 , gp.tileSize , gp.tileSize, null );
+            drawPlayerLife();
 
-            if (messageOn) {
-
-                g2.setFont(g2.getFont().deriveFont(40F));
-                g2.drawString(message , gp.tileSize/2 , gp.tileSize*5 );
-
-                messageTime++ ;
-
-                //disapear after 240 frames (4 seconds)
-                if (messageTime  > 240) {
-                    messageTime = 0;
-                    messageOn = false;
-                }
-            }
-
-            //game over?
-            if(gameFinished) {
-
-                //game over screen
-                g2.setFont(comic_sansLarge);
-                g2.setColor(Color.red);
-
-
-                //get textLength
-                String text = "Game Over";
-                int x = centerText(text);
-                int y = gp.screenHeight / 2 ;
-
-                g2.drawString(text , x  ,y);
-
-                //g2.drawString(Player.score , x ,y );
-
-                //end the game
-                gp.gameThread = null;
-
-            }//end game finished
         }else if (gp.gameState == gp.pauseState){
             // pause ui
             drawPauseScreen();
+            drawPlayerLife();
 
         }
 
     }// end draw
 
     public void drawTitle() {
+
 
         // background
         g2.setColor(Color.BLACK);
@@ -139,16 +117,93 @@ public class UI {
             g2.drawString(">", x -gp.tileSize, y);
         }
 
-        text = "EXIT GAME!";
+        text = "CONTROLS!";
         x= centerText(text);
-        y += gp.tileSize;
-        y += gp.tileSize;
+        y += gp.tileSize ;
         g2.drawString(text,x ,y);
         if (commandNum == 1) {
             g2.drawString(">", x -gp.tileSize, y);
         }
 
+
+        text = "EXIT GAME!";
+        x= centerText(text);
+        y += gp.tileSize;
+        g2.drawString(text,x ,y);
+        if (commandNum == 2) {
+            g2.drawString(">", x -gp.tileSize, y);
+        }
+
     } //end draw title
+
+    public void showControls() {
+
+
+
+        //clear screen
+        g2.setColor(Color.BLACK);
+        g2.fillRect(0 , 0, gp.screenWidth, gp.screenHeight);
+
+        //text
+        g2.setFont(comic_sans);
+        g2.setColor(Color.white);
+
+        String text;
+        int x , y = 0;
+
+        text = "Controls!";
+        x= centerText(text);
+        y += gp.tileSize * 4;
+        g2.drawString(text,x ,y);
+
+        text = "Walk Up   -> ( W ) ";
+        x= centerText(text);
+        y += gp.tileSize;
+        g2.drawString(text,x ,y);
+
+        text = "Walk Left -> ( A ) ";
+        x= centerText(text);
+        y += gp.tileSize;
+        g2.drawString(text,x ,y);
+
+        text = "Walk Down -> ( S ) ";
+        x= centerText(text);
+        y += gp.tileSize;
+        g2.drawString(text,x ,y);
+
+        text = "Walk right -> ( D ) ";
+        x= centerText(text);
+        y += gp.tileSize;
+        g2.drawString(text,x ,y);
+
+        text = "Pause      -> ( ESC ) ";
+        x= centerText(text);
+        y += gp.tileSize;
+        g2.drawString(text,x ,y);
+
+        text = "Attack     -> ( SPACE ) ";
+        x= centerText(text);
+        y += gp.tileSize;
+        g2.drawString(text,x ,y);
+
+        messageTime++;
+
+        //disapear after 240 frames (4 seconds)
+        if (messageTime  > 240) {
+            messageTime = 0;
+            messageOn = false;
+
+            gp.gameState = gp.titleScreenState;
+
+            //return to tile screen
+            drawTitle();
+
+        }
+
+
+
+
+    }
 
     public void drawPauseScreen() {
 
@@ -161,6 +216,38 @@ public class UI {
 
         g2.drawString(text , x  ,y);
     }
+
+    public void drawPlayerLife(){
+
+        int x = gp.tileSize/2;
+        int y = gp.tileSize/2;
+        int maxHearts = gp.player.maxHealth/2 ;
+        int fullHearts = gp.player.health/2;
+        int halfHearts = gp.player.health%2;
+
+        for (int i = 0; i < maxHearts; i++) {
+            // Draw empty heart background for all slots first
+            g2.drawImage(health_empty,  x, y, gp.tileSize, gp.tileSize, null);
+            x += gp.tileSize;
+        }
+
+        // reset x
+        x = gp.tileSize/2;
+
+        //draw full and half hearts over empty hearts
+        for(int i = 0; i < fullHearts; i++) {
+            g2.drawImage(health_full, x, y, gp.tileSize, gp.tileSize, null);
+            x += gp.tileSize;
+        }
+        for(int i = 0; i < halfHearts; i++) {
+            g2.drawImage(health_half, x, y, gp.tileSize, gp.tileSize, null);
+            x += gp.tileSize;
+        }
+    }
+
+    //public void drawPlayerArmour() {
+    //             g2.drawImage(shieldImage, (gp.tileSize/2) * 8 ,gp.tileSize/2 , gp.tileSize , gp.tileSize, null );
+    // }
 
     public void showMessage(String text) {
         message = text;

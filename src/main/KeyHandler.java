@@ -34,15 +34,15 @@ public class KeyHandler implements KeyListener {
 		//title state
 		if (gp.gameState == gp.titleScreenState) {
 			//has w been pressed?
-			if (code == KeyEvent.VK_W) {
+			if (code == KeyEvent.VK_S) {
 				gp.ui.commandNum--; //move cursor up in menu
 				if (gp.ui.commandNum < 0 ) {
-					gp.ui.commandNum = 1 ;
+					gp.ui.commandNum = 2 ;
 				}
 			}
-			if (code == KeyEvent.VK_S) {
+			if (code == KeyEvent.VK_W) {
 				gp.ui.commandNum++;// move cursor down in menu
-				if (gp.ui.commandNum > 1 ) {
+				if (gp.ui.commandNum > 2 ) {
 					gp.ui.commandNum = 0 ;
 				}
 			}
@@ -53,8 +53,13 @@ public class KeyHandler implements KeyListener {
 					System.out.println("startGame");
 				}
 				if (gp.ui.commandNum == 1 ) {
+					System.out.println("Controls");
+					gp.gameState = gp.controlScreenState;
+
+				}
+				if (gp.ui.commandNum == 2 ) {
 					System.out.println("exitGame");
-					 System.exit(0); // quit game
+					System.exit(0); // quit game
 				}
 			}
 		}
@@ -98,6 +103,4 @@ public class KeyHandler implements KeyListener {
 		
 	}
 
-	
-	
 }

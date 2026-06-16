@@ -7,8 +7,7 @@ public class Entity {
 	
 	//entity variables 
 	public int worldx, worldy ;
-	public int speed ; 
-	
+	public int speed ;
 	
 	//player sprites  
 	BufferedImage PlayerUp1;
@@ -30,5 +29,11 @@ public class Entity {
 	public Boolean collisionOn = false;
 
 	public int solidAreaDefaultX , solidAreaDefaultY;
+
+	public int health;
+	public int maxHealth;
+	public int damage;
+
+
 
 }	

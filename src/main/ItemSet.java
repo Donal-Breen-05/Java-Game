@@ -13,7 +13,7 @@ public class ItemSet {
     public void setItem() {
 
         //1
-        gp.item_array[0] = new Item_coin();
+        gp.item_array[0] = new Item_coin(gp);
         gp.item_array[0].worldx = 2 * gp.tileSize;
         gp.item_array[0].worldy = 2 * gp.tileSize;
 

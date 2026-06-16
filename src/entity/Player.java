@@ -16,11 +16,16 @@ public class Player extends Entity{
 
 	public final int screenx ;
 	public final int screeny;
-	
+
+	//player specific stats
+	public int armour;
+	public int maxArmour;
+
 	//constructor 
 	public Player(GamePanel gp ,KeyHandler keyH) {
 		this.gp = gp ; 
-		this.keyH = keyH ; 
+		this.keyH = keyH ;
+
 
 		screenx = gp.screenWidth/2 - (gp.tileSize - 2);
 		screeny = gp.screenHeight/2 - (gp.tileSize - 2);
@@ -48,7 +53,13 @@ public class Player extends Entity{
 
 		speed = 4 ; 
 		direction = "down"; 
-		
+
+		//stats
+		maxHealth = 6 ;//6 half hearts
+		health = maxHealth;
+		damage = 2;
+		armour = 0 ;
+		maxArmour = 3;
 	}
 	
 	public void update() {

@@ -52,6 +52,7 @@ public class GamePanel extends JPanel implements Runnable{
 	public final int playState = 1;
 	public final int pauseState = 2;
 	public final int titleScreenState = 0;
+	public final int controlScreenState = 3;
 
 	//entity / player
 	public Player player = new Player(this,keyH);
