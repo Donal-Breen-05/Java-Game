@@ -91,6 +91,9 @@ public class Player extends Entity{
 			collisionOn = false;
 			gp.cChecker.checkTile(this);
 
+			//check event
+			gp.eHandler.checkEvent();              
+
 			//item collision
 			int item_index  = gp.cChecker.checkItem(this , true);
 			collectItem(item_index);

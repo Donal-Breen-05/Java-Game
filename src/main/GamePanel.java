@@ -66,6 +66,8 @@ public class GamePanel extends JPanel implements Runnable{
 	//items
 	public Item[] item_array = new Item[10];
 
+	//events
+	public Event eHandler = new Event(this);
 
 	
 	public GamePanel() { 
