@@ -42,9 +42,15 @@ public class GamePanel extends JPanel implements Runnable{
 
 	//engine
 	TileManager tileM = new TileManager(this); 
-	KeyHandler keyH = new KeyHandler();
+	KeyHandler keyH = new KeyHandler(this);
 	Thread gameThread; 	//thread for drawing screen
 	public UI ui = new UI(this);
+
+
+	// GAME STATE
+	public int gameState;
+	public final int playState = 1;
+	public final int pauseState = 2;
 
 	//entity / player
 	public Player player = new Player(this,keyH);
@@ -57,6 +63,8 @@ public class GamePanel extends JPanel implements Runnable{
 
 	//items
 	public Item[] item_array = new Item[10];
+
+
 	
 	public GamePanel() { 
 		this.setPreferredSize(new Dimension(screenWidth , screenHeight)); 
@@ -70,6 +78,7 @@ public class GamePanel extends JPanel implements Runnable{
 	//set up items and entity
 	public void setupGame() {
 		itemSetter.setItem();
+		gameState = playState; // game plays as normal
 	}
 	
 	//start main thread (main game loop) 
@@ -131,14 +140,21 @@ public class GamePanel extends JPanel implements Runnable{
 	
 	//fancy display stuff 
 	public void update() {
-		
-		
-		//calls player object and calls function from player class 
-		player.update();
+
+		//if game is playing update player
+		if (gameState == playState) {
+			//calls player object and calls function from player class
+			player.update();
+		}
+		if (gameState == pauseState) {
+			// blank for now
+		}
+
+
 	}
 	
 	public void paintComponent(Graphics g) { 
-		
+
 		//calls the parent class(JPannel) to paint the component to the screen 
 		super.paintComponent(g);
 		

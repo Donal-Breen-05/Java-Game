@@ -6,11 +6,17 @@ import java.awt.event.KeyListener;
 //takes care of user input? 
 public class KeyHandler implements KeyListener {
 
+	GamePanel gp;
+
 	// NOT USED IN GAME PROGRAMMING (TOO SLOW) 
 	@Override
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public KeyHandler(GamePanel gp) {
+		this.gp = gp;
 	}
 	
 	
@@ -18,6 +24,7 @@ public class KeyHandler implements KeyListener {
 	public boolean downPressed; 
 	public boolean leftPressed; 
 	public boolean rightPressed; 
+
 
 	@Override
 	public void keyPressed(KeyEvent e) {
@@ -38,8 +45,22 @@ public class KeyHandler implements KeyListener {
 		if (code == KeyEvent.VK_D) { 
 			rightPressed = true; 
 		}
+		if (code == KeyEvent.VK_ESCAPE) {
+
+			//if pause is pressed
+			if (gp.gameState == gp.playState) {
+
+				//set state to pauses
+				gp.gameState = gp.pauseState;
+
+			}
+			else if (gp.gameState == gp.pauseState){
+				gp.gameState = gp.playState;
+			}//end else if
+
+		}
 		
-	}
+	}// end key pressed
 
 	@Override
 	public void keyReleased(KeyEvent e) {

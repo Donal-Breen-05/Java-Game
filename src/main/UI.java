@@ -8,6 +8,8 @@ import java.awt.image.BufferedImage;
 public class UI {
 
     GamePanel gp;
+    Graphics2D g2 ;
+
     Font comic_sans;
     Font comic_sansLarge;
 
@@ -34,31 +36,12 @@ public class UI {
     }
 
     public void draw(Graphics2D g2) {
+        this.g2 = g2;
+
+        if (gp.gameState == gp.playState) {
 
 
-        //game over?
-        if(gameFinished) {
-
-            g2.setFont(comic_sansLarge);
-            g2.setColor(Color.red);
-
-            int x ;
-            int y ;
-
-            //get textLength
-            String text = "Game Over";
-            int textLength = (int)g2.getFontMetrics().getStringBounds(text , g2).getWidth();
-
-            x  = gp.screenWidth/2 - textLength/2;
-            y = gp.screenHeight/2 - (gp.tileSize*3);
-
-            g2.drawString(text , x ,y );
-            //g2.drawString(Player.score , x ,y );
-
-            //end the game
-            gp.gameThread = null;
-
-        }else {
+            //normal play ui
             g2.setFont(comic_sans);
             g2.setColor(Color.white);
             g2.drawString("test" , 50, 50);
@@ -77,10 +60,55 @@ public class UI {
                     messageOn = false;
                 }
             }
+
+            //game over?
+            if(gameFinished) {
+
+                //game over screen
+                g2.setFont(comic_sansLarge);
+                g2.setColor(Color.red);
+
+                int x ;
+                int y ;
+
+                //get textLength
+                String text = "Game Over";
+                int textLength = (int)g2.getFontMetrics().getStringBounds(text , g2).getWidth();
+
+                x  = gp.screenWidth/2 - textLength/2;
+                y = gp.screenHeight/2 - (gp.tileSize*3);
+
+                g2.drawString(text , x ,y );
+                //g2.drawString(Player.score , x ,y );
+
+                //end the game
+                gp.gameThread = null;
+
+            }//end game finished
+        }else if (gp.gameState == gp.pauseState){
+            // pause ui
+            drawPauseScreen();
+
         }
 
 
+
     }// end draw
+
+    public void drawPauseScreen() {
+
+        g2.setFont(comic_sans);
+        g2.setColor(Color.white);
+
+        String text = "paused";
+        int x , y ;
+        int textLength = (int)g2.getFontMetrics().getStringBounds(text , g2).getWidth();
+
+        x = gp.screenWidth / 2  - textLength /2 ;
+        y = gp.screenHeight / 2 ;
+
+        g2.drawString(text , x  ,y);
+    }
 
     public void showMessage(String text) {
         message = text;
