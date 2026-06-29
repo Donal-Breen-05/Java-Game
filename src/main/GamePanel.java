@@ -6,9 +6,12 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.io.IOException;
 
 import javax.swing.JPanel;
 
+import enemy.Zombie;
+import entity.Entity;
 import entity.Player;
 import item.Item;
 import tile.TileManager;
@@ -40,6 +43,9 @@ public class GamePanel extends JPanel implements Runnable{
 	//fps 
 	int fps = 60; 
 
+
+
+
 	//engine
 	TileManager tileM = new TileManager(this); 
 	KeyHandler keyH = new KeyHandler(this);
@@ -56,6 +62,10 @@ public class GamePanel extends JPanel implements Runnable{
 
 	//entity / player
 	public Player player = new Player(this,keyH);
+
+	//enemy
+	public Zombie[] enemy = new Zombie[20];
+	public EnemySet enemySetter = new EnemySet(this);
 
 	//collision detection
 	public CollisionDetection cChecker = new CollisionDetection(this);
@@ -82,6 +92,11 @@ public class GamePanel extends JPanel implements Runnable{
 	//set up items and entity
 	public void setupGame() {
 		itemSetter.setItem();
+		try {
+			enemySetter.setEnemy();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		gameState = titleScreenState; //initially sets as the title screen
 	}
 	
@@ -147,6 +162,11 @@ public class GamePanel extends JPanel implements Runnable{
 
 		//if game is playing update player
 		if (gameState == playState) {
+			for(int i = 0  ; i < enemy.length; i++) {
+				if(enemy[i] != null) {
+					enemy[i].update();
+				}
+			}
 			//calls player object and calls function from player class
 			player.update();
 		}
@@ -182,6 +202,11 @@ public class GamePanel extends JPanel implements Runnable{
 
 			}//end for
 
+            for (int i = 0 ; i < enemy.length ; i++) {
+                if (enemy[i] != null) {
+                    enemy[i].draw(g2 , this);
+                }
+            }
 			//calls player object and calls function from player class
 			player.draw(g2);
 

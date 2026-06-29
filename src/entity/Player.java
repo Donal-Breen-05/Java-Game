@@ -23,7 +23,8 @@ public class Player extends Entity{
 
 	//constructor 
 	public Player(GamePanel gp ,KeyHandler keyH) {
-		this.gp = gp ; 
+
+        this.gp = gp ;
 		this.keyH = keyH ;
 
 
@@ -159,7 +160,7 @@ public class Player extends Entity{
 					//score++;
 					break;
 				case "heart":
-/*
+
 					if (health < 6){
 						// to be added in the future
 						gp.item_array[index] = null;
@@ -170,7 +171,7 @@ public class Player extends Entity{
 						}
 					}//end if
 
- */
+
 					break;
 				case "sword":
 					// to be added in the future

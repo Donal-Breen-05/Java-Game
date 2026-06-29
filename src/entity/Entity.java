@@ -1,5 +1,7 @@
 package entity;
 
+import main.GamePanel;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
@@ -10,12 +12,12 @@ public class Entity {
 	public int speed ;
 	
 	//player sprites  
-	BufferedImage PlayerUp1;
-    BufferedImage PlayerUp2;
-    BufferedImage PlayerDown1;
-    BufferedImage PlayerDown2;
-    BufferedImage PlayerLeft1;
-    BufferedImage PlayerLeft2;
+    public BufferedImage PlayerUp1;
+	public BufferedImage PlayerUp2;
+	public BufferedImage PlayerDown1;
+	public BufferedImage PlayerDown2;
+	public BufferedImage PlayerLeft1;
+	public BufferedImage PlayerLeft2;
     public BufferedImage PlayerRight1;
     public BufferedImage PlayerRight2;
 	public String direction ; 
@@ -35,5 +37,9 @@ public class Entity {
 	public int damage;
 
 
-
-}	
+	public Entity(GamePanel gp) {
+		solidArea = new Rectangle();
+	}
+    public Entity() {
+    }
+}
