@@ -7,6 +7,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.Currency;
 import java.util.Objects;
 import java.util.Random;
 
@@ -20,17 +21,16 @@ public class Zombie extends Entity{
     public String name;
 
     //zombie states
-
     public int idelState = 0 ;
     public int followState = 1;
     public int currentState = idelState;
 
+    public int actionLockCounter;
 
     public Zombie (GamePanel gp) throws IOException {
         super(gp);
 
         //enemy states
-
 
         //stats
         this.name = "zombie";
@@ -67,29 +67,64 @@ public class Zombie extends Entity{
         PlayerRight2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/enemy/zombie/zom-right2.png")));
 
         //hurt zombie
+        hurtPlayerUp1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/enemy/zombie/hurt-zom-up1.png")));
+        hurtPlayerUp2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/enemy/zombie/hurt-zom-up2.png")));
+        hurtPlayerDown1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/enemy/zombie/hurt-zom-down1.png")));
+        hurtPlayerDown2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/enemy/zombie/hurt-zom-down2.png")));
+        hurtPlayerLeft1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/enemy/zombie/hurt-zom-left1.png")));
+        hurtPlayerLeft2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream( "/enemy/zombie/hurt-zom-left2.png")));
+        hurtPlayerRight1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/enemy/zombie/hurt-zom-right1.png")));
+        hurtPlayerRight2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/enemy/zombie/hurt-zom-right2.png")));
 
     }
 
     public void idleRandomMovement() {
 
-        int actionLockCounter = 0;
+
+        //check collision
+        collisionOn = false;
+        gp.cChecker.checkTile(this);
+
+        if (!collisionOn) {
+            switch (direction) {
+                case "up":
+                    worldy -= speed;
+                    break;
+                case "down":
+                    worldy += speed;
+                    break;
+                case "left":
+                    worldx -= speed;
+                    break;
+                case "right":
+                    worldx += speed;
+                    break;
+            }
+        }
+
         actionLockCounter++;
 
-        if (actionLockCounter == 120){
+        if (actionLockCounter >= 240) {
 
             Random random = new Random();
-            int i = random.nextInt(100)+1; // 1 to 100 random int
+            int i = random.nextInt(100) + 1;
 
-            if (i <= 25){direction = "up";}
-            if (i > 25 && i <= 50){direction = "down";}
-            if (i > 50 && i <= 75) {direction = "left";}
-            if (i > 75 && i <= 100){direction = "right";}
-
-
+            if (i <= 25) {
+                direction = "up";
+            }
+            else if (i <= 50) {
+                direction = "down";
+            }
+            else if (i <= 75) {
+                direction = "left";
+            }
+            else {
+                direction = "right";
+            }
 
             actionLockCounter = 0;
-        } // end if
-    }// end random movement
+        }
+    }
 
     public void update(){
 
@@ -126,7 +161,7 @@ public class Zombie extends Entity{
             default -> null;
         };
 
-        //dont draw enemys not on screen
+        //don't draw enemy's not on screen
         if (worldx + gp.tileSize > gp.player.worldx - gp.player.screenx &&
                 worldx - gp.tileSize < gp.player.worldx + gp.player.screenx &&
                 worldy + gp.tileSize > gp.player.worldy - gp.player.screeny &&
