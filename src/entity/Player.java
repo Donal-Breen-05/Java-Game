@@ -7,12 +7,15 @@ import java.util.Objects;
 
 import javax.imageio.ImageIO;
 
+import enemy.Zombie;
 import main.GamePanel;
 import main.KeyHandler;
 
 public class Player extends Entity{
 	GamePanel gp ; 
 	KeyHandler keyH;
+
+	public Zombie zombie;
 
 	public final int screenx ;
 	public final int screeny;
@@ -23,6 +26,8 @@ public class Player extends Entity{
 
 	//constructor 
 	public Player(GamePanel gp ,KeyHandler keyH) {
+
+		super(gp);
 
         this.gp = gp ;
 		this.keyH = keyH ;
@@ -64,6 +69,11 @@ public class Player extends Entity{
 	}
 	
 	public void update() {
+
+		if (knockBack) {
+			applyKnockBack();
+			return; // skip normal input handling while being pushed back
+		}
 		
 		//only up date if keys have been pressed 
 		if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {
@@ -120,12 +130,15 @@ public class Player extends Entity{
 			//entity collision
 			for (int i = 0; i < gp.enemy.length; i++) {
 				if (gp.enemy[i] != null) {
-					if (gp.cChecker.checkEntityCollision(this, gp.enemy[i])) {
+					if (gp.cChecker.checkEntityCollision(this, gp.enemy[i]) && !knockBack) {
+						knockBack = true;
+
+						startKnockBack(gp.enemy[i]);
 						health--;
 					}
 				}
 			}
-			
+
 			//change sprite image every 10 frames 
 			spriteCounter++ ; 
 			if(spriteCounter > 10 ) { 

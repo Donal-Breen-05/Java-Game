@@ -11,6 +11,7 @@ public class Event {
 
     int eventRectDefaultX , eventRectDefaultY;
 
+
     public Event(GamePanel gp){
         this.gp = gp ;
 
