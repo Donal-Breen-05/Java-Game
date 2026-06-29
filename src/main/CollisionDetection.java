@@ -149,5 +149,31 @@ public class CollisionDetection {
         }// end for
         return index ;
     }// end check item
+
+    //checks is in an enemy
+    public boolean checkEntityCollision(Entity a, Entity b) {
+
+        boolean hit = false;
+
+        // move both solid areas to their actual world position
+        a.solidArea.x = a.worldx + a.solidArea.x;
+        a.solidArea.y = a.worldy + a.solidArea.y;
+
+        b.solidArea.x = b.worldx + b.solidArea.x;
+        b.solidArea.y = b.worldy + b.solidArea.y;
+
+        if (a.solidArea.intersects(b.solidArea)) {
+            hit = true;
+        }
+
+        // reset back to entity-relative offsets
+        a.solidArea.x = a.solidAreaDefaultX;
+        a.solidArea.y = a.solidAreaDefaultY;
+
+        b.solidArea.x = b.solidAreaDefaultX;
+        b.solidArea.y = b.solidAreaDefaultY;
+
+        return hit;
+    }
 }// end class
 

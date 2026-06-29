@@ -24,6 +24,6 @@ public class Main {
 		//sets items
 		gamePanel.setupGame();
 		gamePanel.startGameThread();
-		
+		d
 	}
 }

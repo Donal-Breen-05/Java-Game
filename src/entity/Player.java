@@ -38,8 +38,8 @@ public class Player extends Entity{
 		solidArea.width = 32;
 		solidArea.height = 32;
 
-		solidAreaDefaultY = solidArea.x;
-		solidAreaDefaultX = solidArea.y;
+		solidAreaDefaultY = solidArea.y;
+		solidAreaDefaultX = solidArea.x;
 
 		setDefaultValues(); 
 		getPlayerImage(); 
@@ -114,6 +114,15 @@ public class Player extends Entity{
 					case "right":
 						worldx += speed; //right
 						break;
+				}
+			}
+
+			//entity collision
+			for (int i = 0; i < gp.enemy.length; i++) {
+				if (gp.enemy[i] != null) {
+					if (gp.cChecker.checkEntityCollision(this, gp.enemy[i])) {
+						health--;
+					}
 				}
 			}
 			
