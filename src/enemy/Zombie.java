@@ -99,6 +99,16 @@ public class Zombie extends Entity{
             System.out.println("follow player");
             //follow();
         }
+        //change sprite image every 10 frames
+        spriteCounter++ ;
+        if(spriteCounter > 10 ) {
+            if (spriteNum ==1) {
+                spriteNum = 2;
+            } else if (spriteNum == 2 ) {
+                spriteNum = 1 ;
+            }
+            spriteCounter = 0 ;
+        }
     }
 
     public void draw(Graphics2D g2 ,GamePanel gp) {
