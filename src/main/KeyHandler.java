@@ -23,7 +23,10 @@ public class KeyHandler implements KeyListener {
 	public boolean upPressed; 
 	public boolean downPressed; 
 	public boolean leftPressed; 
-	public boolean rightPressed; 
+	public boolean rightPressed;
+
+	//attacking
+	public boolean attackPressed;
 
 
 	@Override
@@ -70,6 +73,7 @@ public class KeyHandler implements KeyListener {
 			if (code == KeyEvent.VK_S) { downPressed = true; }
 			if (code == KeyEvent.VK_A) { leftPressed = true; }
 			if (code == KeyEvent.VK_D) { rightPressed = true; }
+			if(code == KeyEvent.VK_SPACE){ attackPressed = true; }
 			if (code == KeyEvent.VK_ESCAPE) {
 				gp.gameState = gp.pauseState;
 			}
@@ -99,6 +103,10 @@ public class KeyHandler implements KeyListener {
 		}
 		if (code == KeyEvent.VK_D) { 
 			rightPressed = false; 
+		}
+		//attack button
+		if(code == KeyEvent.VK_SPACE){
+			attackPressed = false;
 		}
 		
 	}

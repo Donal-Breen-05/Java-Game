@@ -16,14 +16,15 @@ public class Zombie extends Entity{
     public int screenx ;
     public int screeny;
 
-    public int maxLife;
-    public int life;
     public String name;
 
     //zombie states
     public int idelState = 0 ;
     public int followState = 1;
     public int currentState = idelState;
+
+    //is the zombie dead?
+    public boolean dead = false;//ironic
 
     public int actionLockCounter;
 
@@ -35,8 +36,8 @@ public class Zombie extends Entity{
         //stats
         this.name = "zombie";
         speed = 2 ;
-        maxLife = 8;
-        life = maxLife;
+        maxHealth = 8;
+        health = maxHealth;
         damage = 1;
 
         //for collisions
@@ -126,14 +127,62 @@ public class Zombie extends Entity{
         }
     }
 
+    public void follow() {
+
+        collisionOn = false;
+
+        int dx = gp.player.worldx - worldx;
+        int dy = gp.player.worldy - worldy;
+
+        // pick whichever axis has the larger distance to decide movement direction
+        if (Math.abs(dx) > Math.abs(dy)) {
+            direction = (dx > 0) ? "right" : "left";
+        } else {
+            direction = (dy > 0) ? "down" : "up";
+        }
+
+        gp.cChecker.checkTile(this);
+
+        if (!collisionOn) {
+            switch (direction) {
+                case "up":    worldy -= speed; break;
+                case "down":  worldy += speed; break;
+                case "left":  worldx -= speed; break;
+                case "right": worldx += speed; break;
+            }
+        }
+    }
+
+    @Override
+    public void takeDamage(int damage) {
+        health -= damage;
+    }
+
     public void update(){
+
+        if (knockBack) {
+            applyKnockBack();
+            return;
+        }
+
+        // check radius regardless of current state
+        if (currentState == idelState && checkRadius(gp.player, gp.player.detectionRadius)) {
+            currentState = followState;
+            System.out.println("follow player");
+        }
 
         if (currentState == idelState) {
             idleRandomMovement();
-        }else if (currentState == followState){
-            System.out.println("follow player");
-            //follow();
+        } else if (currentState == followState) {
+            follow();
         }
+
+        // check for death
+        if (health <= 0) {
+            dead = true;
+            return;
+        }
+
         //change sprite image every 10 frames
         spriteCounter++ ;
         if(spriteCounter > 10 ) {

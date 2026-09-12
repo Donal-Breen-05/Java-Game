@@ -59,6 +59,7 @@ public class GamePanel extends JPanel implements Runnable{
 	public final int pauseState = 2;
 	public final int titleScreenState = 0;
 	public final int controlScreenState = 3;
+	public final int endScreenState = 4 ;
 
 	//entity / player
 	public Player player = new Player(this,keyH);
@@ -162,9 +163,12 @@ public class GamePanel extends JPanel implements Runnable{
 
 		//if game is playing update player
 		if (gameState == playState) {
-			for(int i = 0  ; i < enemy.length; i++) {
-				if(enemy[i] != null) {
+			for (int i = 0; i < enemy.length; i++) {
+				if (enemy[i] != null) {
 					enemy[i].update();
+					if (enemy[i].dead) {
+						enemy[i] = null;
+					}
 				}
 			}
 			//calls player object and calls function from player class

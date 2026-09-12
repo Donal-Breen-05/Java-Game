@@ -70,8 +70,13 @@ public class UI {
             drawPlayerLife();
 
         }
+        else if (gp.gameState == gp.endScreenState) {
+            drawEnd();
+        }
 
     }// end draw
+
+
 
     public void drawTitle() {
 
@@ -135,6 +140,25 @@ public class UI {
         }
 
     } //end draw title
+
+    public void drawEnd() {
+        // background
+        g2.setColor(Color.BLACK);
+        g2.fillRect(0 , 0, gp.screenWidth, gp.screenHeight);
+
+        //title + font
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 96F));
+        String text = "Game Over!!!";
+        int x = centerText(text);
+        int y = gp.tileSize*3;
+
+        //shadow
+        g2.setColor(Color.GRAY);
+        g2.drawString(text, x+5, y+5);
+        //text colour
+        g2.setColor(Color.red);
+        g2.drawString(text , x , y);
+    }
 
     public void showControls() {
 

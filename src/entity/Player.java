@@ -10,12 +10,14 @@ import javax.imageio.ImageIO;
 import enemy.Zombie;
 import main.GamePanel;
 import main.KeyHandler;
+import main.UI;
 
 public class Player extends Entity{
 	GamePanel gp ; 
 	KeyHandler keyH;
 
 	public Zombie zombie;
+	public int detectionRadius = 5 ;
 
 	public final int screenx ;
 	public final int screeny;
@@ -23,6 +25,13 @@ public class Player extends Entity{
 	//player specific stats
 	public int armour;
 	public int maxArmour;
+
+	// combat
+	public boolean attacking = false ;
+	public int attackCounter = 0 ;
+	public int attackDuration = 10;
+	public Rectangle attackArea;
+
 
 	//constructor 
 	public Player(GamePanel gp ,KeyHandler keyH) {
@@ -47,8 +56,11 @@ public class Player extends Entity{
 		solidAreaDefaultX = solidArea.x;
 
 		setDefaultValues(); 
-		getPlayerImage(); 
-		
+		getPlayerImage();
+
+		// collision for sword
+		attackArea = new Rectangle(0, 0, gp.tileSize, gp.tileSize);
+
 	}
 	public void setDefaultValues() { 
 		//all inherited from Entity class
@@ -67,6 +79,58 @@ public class Player extends Entity{
 		armour = 0 ;
 		maxArmour = 3;
 	}
+
+	// functions for player combat
+	public Rectangle getAttackArea() {
+
+		// start at the player's current world position
+		int attackX = worldx;
+		int attackY = worldy;
+
+		// shift the attack box one tile in the direction the player is facing
+		switch (direction) {
+			case "up":
+				attackY = worldy - gp.tileSize;
+				break;
+			case "down":
+				attackY = worldy + gp.tileSize;
+				break;
+			case "left":
+				attackX = worldx - gp.tileSize;
+				break;
+			case "right":
+				attackX = worldx + gp.tileSize;
+				break;
+		}
+
+		// return a hitbox the size of one tile, positioned in front of the player
+		return new Rectangle(attackX, attackY, gp.tileSize, gp.tileSize);
+	}
+
+	public void updateAttackArea() {
+
+		switch (direction) {
+			case "up":
+				attackArea.x = worldx;
+				attackArea.y = worldy - gp.tileSize;
+				break;
+			case "down":
+				attackArea.x = worldx;
+				attackArea.y = worldy + gp.tileSize;
+				break;
+			case "left":
+				attackArea.x = worldx - gp.tileSize;
+				attackArea.y = worldy;
+				break;
+			case "right":
+				attackArea.x = worldx + gp.tileSize;
+				attackArea.y = worldy;
+				break;
+		}
+
+		attackArea.width = gp.tileSize;
+		attackArea.height = gp.tileSize;
+	}
 	
 	public void update() {
 
@@ -74,7 +138,48 @@ public class Player extends Entity{
 			applyKnockBack();
 			return; // skip normal input handling while being pushed back
 		}
-		
+
+		// sets invincibility back to false after time
+		updateInvincibility();
+
+		// start a new swing on a fresh press
+		if (keyH.attackPressed && !attacking) {
+			attacking = true;
+			attackCounter = 0;
+			updateAttackArea();
+			keyH.attackPressed = false;
+
+			// check for enemies ONCE, right as the swing starts
+			for (int i = 0; i < gp.enemy.length; i++) {
+				if (gp.enemy[i] != null) {
+
+					Rectangle enemyArea = gp.enemy[i].solidArea;
+					Rectangle enemyHitbox = new Rectangle(
+							gp.enemy[i].worldx + enemyArea.x,
+							gp.enemy[i].worldy + enemyArea.y,
+							enemyArea.width,
+							enemyArea.height
+					);
+
+					if (attackArea.intersects(enemyHitbox)) {
+						gp.enemy[i].takeDamage(damage);
+						gp.enemy[i].knockBack = true;
+						gp.enemy[i].startKnockBack(this);
+					}
+				}
+			}
+		}
+
+		// while the sword is out, just handle the visual/timing — no more damage checks here
+		if (attacking) {
+			attackCounter++;
+			if (attackCounter > attackDuration) {
+				attacking = false;
+				attackCounter = 0;
+			}
+		}
+
+
 		//only up date if keys have been pressed 
 		if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {
 
@@ -130,14 +235,14 @@ public class Player extends Entity{
 			//entity collision
 			for (int i = 0; i < gp.enemy.length; i++) {
 				if (gp.enemy[i] != null) {
-					if (gp.cChecker.checkEntityCollision(this, gp.enemy[i]) && !knockBack) {
+					if (gp.cChecker.checkEntityCollision(this, gp.enemy[i]) && !invincible && !knockBack) {
 						knockBack = true;
-
 						startKnockBack(gp.enemy[i]);
-						health--;
+						this.takeDamage(1);
 					}
 				}
 			}
+
 
 			//change sprite image every 10 frames 
 			spriteCounter++ ; 
@@ -148,6 +253,10 @@ public class Player extends Entity{
 					spriteNum = 1 ; 
 				}
 				spriteCounter = 0 ; 
+			}
+
+			if (health == 0) {
+				gp.gameState = gp.endScreenState;
 			}
 		}
 		
@@ -164,7 +273,21 @@ public class Player extends Entity{
 			PlayerLeft2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/main-left2.png")));
 			PlayerRight1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/main-right1.png")));
 			PlayerRight2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/main-right2.png")));
-			
+
+			//hurt images
+			hurtPlayerUp1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/hurt-main-up1.png")));
+			hurtPlayerUp2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/hurt-main-up2.png")));
+			hurtPlayerDown1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/hurt-main-down-1.png")));
+			hurtPlayerDown2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/hurt-main-down-2.png")));
+			hurtPlayerLeft1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/hurt-main-left1.png")));
+			hurtPlayerLeft2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/hurt-main-left2.png")));
+			hurtPlayerRight1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/hurt-main-right1.png")));
+			hurtPlayerRight2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/Player/hurt-main-right2.png")));
+
+			//player weapon
+			swordImage = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/items/sword.png")));
+
+
 		}catch(IOException e) { 
 			e.printStackTrace();
 		}
@@ -214,40 +337,91 @@ public class Player extends Entity{
 	
 	public void draw(Graphics2D g2) { 
 		
-		BufferedImage image = null; 
+		BufferedImage image = null;
+
+		//attcking
+		if (attacking) {
+			int drawX = screenx + (attackArea.x - worldx);
+			int drawY = screeny + (attackArea.y - worldy);
+
+			if (direction.equals("down")) {
+				// flip 180 degrees around the center of the sword's tile
+				g2.rotate(Math.PI, drawX + gp.tileSize / 2.0, drawY + gp.tileSize / 2.0);
+				g2.drawImage(swordImage, drawX, drawY, gp.tileSize, gp.tileSize, null);
+				g2.rotate(-Math.PI, drawX + gp.tileSize / 2.0, drawY + gp.tileSize / 2.0); // reset rotation
+			} else {
+				g2.drawImage(swordImage, drawX, drawY, gp.tileSize, gp.tileSize, null);
+			}
+		}
+
 		
 		
 		//changes image depending on player movement  
-		switch(direction) { 
-		case "up": 
-			if (spriteNum ==1 ) {
-				image = PlayerUp1; 
-			} else if (spriteNum == 2){ 
-				image = PlayerUp2; 
-			}
-			break; 
-		case "down": 
-			if (spriteNum ==1 ) {
-				image = PlayerDown1;  
-			} else if (spriteNum == 2){ 
-				image = PlayerDown2; 
-			}
-			break; 
-		case "left": 
-			if (spriteNum ==1 ) {
-				image = PlayerLeft1;  
-			} else if (spriteNum == 2){ 
-				image = PlayerLeft2;
-			}
-			break; 
-		case "right": 
-			if (spriteNum ==1 ) {
-				image = PlayerRight1;  
-			} else if (spriteNum == 2){ 
-				image = PlayerRight2;
-			}
-			break; 
-		
+		switch(direction) {
+
+			case "up":
+				if (invincible) {
+					if (spriteNum == 1) {
+						image = hurtPlayerUp1;
+					} else {
+						image = hurtPlayerUp2;
+					}
+				} else {
+					if (spriteNum == 1) {
+						image = PlayerUp1;
+					} else {
+						image = PlayerUp2;
+					}
+				}
+				break;
+
+			case "down":
+				if (invincible) {
+					if (spriteNum == 1) {
+						image = hurtPlayerDown1;
+					} else {
+						image = hurtPlayerDown2;
+					}
+				} else {
+					if (spriteNum == 1) {
+						image = PlayerDown1;
+					} else {
+						image = PlayerDown2;
+					}
+				}
+				break;
+
+			case "left":
+				if (invincible) {
+					if (spriteNum == 1) {
+						image = hurtPlayerLeft1;
+					} else {
+						image = hurtPlayerLeft2;
+					}
+				} else {
+					if (spriteNum == 1) {
+						image = PlayerLeft1;
+					} else {
+						image = PlayerLeft2;
+					}
+				}
+				break;
+
+			case "right":
+				if (invincible) {
+					if (spriteNum == 1) {
+						image = hurtPlayerRight1;
+					} else {
+						image = hurtPlayerRight2;
+					}
+				} else {
+					if (spriteNum == 1) {
+						image = PlayerRight1;
+					} else {
+						image = PlayerRight2;
+					}
+				}
+				break;
 		}
 		
 		g2.drawImage(image, screenx, screeny, gp.tileSize, gp.tileSize, null);
